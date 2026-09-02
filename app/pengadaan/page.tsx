@@ -4,10 +4,34 @@ import { useState } from "react";
 import Image from "next/image";
 import { Download, LogIn, ShieldAlert, Grid2X2 } from "lucide-react";
 import { useLanguage, dictionary } from "@/context/LanguageContext";
+import RegisterModal from "@/components/procurement/RegisterModal";
+import TenderDetailModal, {
+  TenderData,
+} from "@/components/procurement/TenderDetailModal";
 
 export default function EProcurementPage() {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("ALL");
+
+  // State Modal Pendaftaran
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  // State Modal Detail Tender
+  const [selectedTender, setSelectedTender] = useState<TenderData | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  // State Login Form
+  const [vendorId, setVendorId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vendorId || !password) {
+      alert("Harap isi ID Rekanan dan Kata Sandi!");
+      return;
+    }
+    alert(`Login berhasil untuk ID Vendor: ${vendorId}`);
+  };
 
   const categories = [
     { id: "ALL", labelKey: "cat_all" },
@@ -23,31 +47,80 @@ export default function EProcurementPage() {
       code: "TDR-2024-AB-041",
       deadline: "25 Okt 2024",
       statusKey: "status_open",
-      statusType: "open",
+      statusType: "open" as const,
       categoryId: "HEAVY",
+      categoryName: "Alat Berat",
+      location: "Site Tambang Sumbawa",
+      estimatedValue: "Rp 4.5 Milyar",
+      scopeOfWork: [
+        "Penyediaan 5 unit Dump Truck Kelas 400 Ton operasional pertambangan.",
+        "Penyediaan driver & tim maintenance tersertifikasi K3LH.",
+        "Jaminan garansi ketersediaan armada (availability rate >= 92%).",
+      ],
     },
     {
       titleKey: "t2_title",
       code: "TDR-2024-LG-088",
       deadline: "28 Okt 2024",
       statusKey: "status_open",
-      statusType: "open",
+      statusType: "open" as const,
       categoryId: "LOGISTICS",
+      categoryName: "Logistik",
+      location: "Rute Blok Selatan - Smelter",
+      estimatedValue: "Rp 1.8 Milyar",
+      scopeOfWork: [
+        "Layanan pengangkutan konsentrat batubara & mineral rutin.",
+        "Penyediaan armada truk trailer berstandar keamanan tinggi.",
+        "Monitoring GPS real-time dan sistem tracking rute pengiriman.",
+      ],
     },
     {
       titleKey: "t3_title",
       code: "TDR-2024-SF-102",
       deadline: "02 Nov 2024",
       statusKey: "status_prep",
-      statusType: "prep",
+      statusType: "prep" as const,
       categoryId: "SAFETY",
+      categoryName: "Keselamatan / APD",
+      location: "Area Smelter Utama",
+      estimatedValue: "Rp 850 Juta",
+      scopeOfWork: [
+        "Pengadaan APD lengkap (Helm, Sepatu Safety, Baju Tahan Panas).",
+        "Sertifikasi SNI dan standar keselamatan pertambangan internasional.",
+      ],
     },
-  ] as const;
+  ];
 
   const filteredTenders =
     activeTab === "ALL"
       ? tenders
       : tenders.filter((item) => item.categoryId === activeTab);
+
+  const handleOpenDetail = (item: (typeof tenders)[0]) => {
+    const tenderTitle = t(item.titleKey as keyof typeof dictionary);
+    const tenderStatusLabel = t(item.statusKey as keyof typeof dictionary);
+
+    setSelectedTender({
+      title: tenderTitle,
+      code: item.code,
+      deadline: item.deadline,
+      statusType: item.statusType,
+      statusLabel: tenderStatusLabel,
+      category: item.categoryName,
+      location: item.location,
+      estimatedValue: item.estimatedValue,
+      scopeOfWork: item.scopeOfWork,
+    });
+    setIsDetailOpen(true);
+  };
+
+  const handleApplyBidFromDetail = () => {
+    // Arahkan user ke Form Login portal
+    const loginSection = document.getElementById("login");
+    if (loginSection) {
+      loginSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
@@ -142,7 +215,11 @@ export default function EProcurementPage() {
                       )}
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <button className="border border-gray-300 hover:bg-black hover:text-white text-gray-800 text-xs font-semibold px-4 py-1.5 rounded-lg transition">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenDetail(item)}
+                        className="border border-gray-300 hover:bg-black hover:text-white text-gray-800 text-xs font-semibold px-4 py-1.5 rounded-lg transition"
+                      >
                         {t("btn_detail")}
                       </button>
                     </td>
@@ -206,9 +283,13 @@ export default function EProcurementPage() {
               </div>
             </div>
 
-            {/* Action Button Orange */}
+            {/* Action Button Orange (Membuka Modal) */}
             <div className="pt-2 flex justify-end">
-              <button className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold text-xs px-6 py-3 rounded-lg shadow-sm transition">
+              <button
+                type="button"
+                onClick={() => setIsRegisterOpen(true)}
+                className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold text-xs px-6 py-3 rounded-lg shadow-sm transition"
+              >
                 {t("btn_start_reg")}
               </button>
             </div>
@@ -225,17 +306,17 @@ export default function EProcurementPage() {
               </h3>
               <p className="text-xs text-gray-500 mt-1">{t("login_desc")}</p>
 
-              <form
-                className="mt-5 space-y-4"
-                onSubmit={(e) => e.preventDefault()}
-              >
+              <form className="mt-5 space-y-4" onSubmit={handleLogin}>
                 <div>
                   <label className="block text-[10px] font-bold text-gray-600 uppercase mb-1 tracking-wider">
                     {t("lbl_vendor_id")}
                   </label>
                   <input
                     type="text"
+                    required
                     placeholder="VND-XXXX-XXXX"
+                    value={vendorId}
+                    onChange={(e) => setVendorId(e.target.value)}
                     className="w-full bg-slate-50 border border-gray-200 rounded-lg px-3.5 py-2.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-black"
                   />
                 </div>
@@ -246,7 +327,10 @@ export default function EProcurementPage() {
                   </label>
                   <input
                     type="password"
+                    required
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full bg-slate-50 border border-gray-200 rounded-lg px-3.5 py-2.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-black"
                   />
                 </div>
@@ -301,6 +385,20 @@ export default function EProcurementPage() {
           </button>
         </section>
       </div>
+
+      {/* MODAL POPUP REGISTRASI */}
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+      />
+
+      {/* MODAL DETAIL TENDER */}
+      <TenderDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        tender={selectedTender}
+        onApplyBid={handleApplyBidFromDetail}
+      />
     </div>
   );
 }

@@ -1,69 +1,70 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Download, Cloud, Droplets, Sun, Leaf, ArrowRight } from "lucide-react";
+import { useLanguage, dictionary } from "@/context/LanguageContext";
 
 export default function KeberlanjutanPage() {
+  const { t } = useLanguage();
+
   const metrics = [
     {
       icon: Cloud,
-      title: "EMISI KARBON REAL-TIME",
+      titleKey: "esg_m1_title",
       value: "1.2M",
       unit: "tCO2e",
       progress: 65,
-      subtitle: "Target Net Zero 2030: -35% vs 2020",
+      subtitleKey: "esg_m1_sub",
     },
     {
       icon: Droplets,
-      title: "TINGKAT DAUR ULANG AIR",
+      titleKey: "esg_m2_title",
       value: "88%",
       unit: "",
       progress: 88,
-      subtitle: "Sistem Sirkuit Tertutup Aktif",
+      subtitleKey: "esg_m2_sub",
     },
     {
       icon: Sun,
-      title: "ADOPSI ENERGI SURYA",
+      titleKey: "esg_m3_title",
       value: "45",
       unit: "MWp",
       progress: 45,
-      subtitle: "Terpasang di 3 Lokasi Tambang Utama",
+      subtitleKey: "esg_m3_sub",
     },
     {
       icon: Leaf,
-      title: "INDEKS KEANEKARAGAMAN HAYATI",
+      titleKey: "esg_m4_title",
       value: "0.85",
       unit: "/ 1.0",
       progress: 85,
-      subtitle: "Kawasan Konservasi Flora & Fauna",
+      subtitleKey: "esg_m4_sub",
     },
-  ];
+  ] as const;
 
   const csrPrograms = [
     {
-      title: "Pendidikan & Pelatihan",
-      description:
-        "Program beasiswa dan pembangunan fasilitas pendidikan vokasi untuk mempersiapkan tenaga kerja lokal berdaya saing global.",
+      titleKey: "esg_csr1_title",
+      descKey: "esg_csr1_desc",
       image: "/images/csr-pendidikan.png",
     },
     {
-      title: "Fasilitas Kesehatan",
-      description:
-        "Penyediaan klinik keliling dan peningkatan kualitas Puskesmas di area lingkar tambang untuk menjamin kesehatan masyarakat.",
+      titleKey: "esg_csr2_title",
+      descKey: "esg_csr2_desc",
       image: "/images/csr-kesehatan.png",
     },
     {
-      title: "Pendanaan UMKM",
-      description:
-        "Penyaluran modal usaha dan pendampingan bisnis bagi pengusaha lokal untuk menciptakan kemandirian ekonomi pasca-tambang.",
+      titleKey: "esg_csr3_title",
+      descKey: "esg_csr3_desc",
       image: "/images/csr-umkm.png",
     },
-  ];
+  ] as const;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 font-sans">
-      {/* 1. HERO SECTION (Tinggi min-h-[85vh] & Gradient Masking persis Beranda) */}
+      {/* 1. HERO SECTION */}
       <section className="relative w-full text-white pt-28 pb-16 min-h-[85vh] md:min-h-[75vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image Container */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero-esg.png"
@@ -75,15 +76,12 @@ export default function KeberlanjutanPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-slate-950" />
         </div>
 
-        {/* Konten Text & Button (Dibatasi max-w-4xl agar tidak molor) */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-6">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
-            Transparansi Keberlanjutan &amp; Reklamasi Lahan
+            {t("esg_hero_title")}
           </h1>
           <p className="text-base md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed drop-shadow">
-            Komitmen teguh kami terhadap pemulihan lingkungan, pengurangan jejak
-            karbon, dan pemberdayaan komunitas lokal demi masa depan industri
-            pertambangan yang berkelanjutan.
+            {t("esg_hero_desc")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
@@ -92,21 +90,21 @@ export default function KeberlanjutanPage() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-8 py-3 rounded transition shadow-lg"
             >
               <Download className="w-4 h-4" />
-              Laporan ESG 2026 (PDF)
+              {t("esg_btn_report")}
             </a>
           </div>
         </div>
       </section>
 
-      {/* 2. METRIK KEBERLANJUTAN (Struktur Kinerja persis Beranda) */}
+      {/* 2. METRIK KEBERLANJUTAN */}
       <section className="w-full bg-white py-16 border-b border-gray-100">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center md:text-left mb-8">
             <span className="text-sm font-semibold text-emerald-600 uppercase tracking-wider">
-              Kinerja ESG
+              {t("esg_perf_badge")}
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-gray-950 mt-1">
-              Metrik Keberlanjutan Kunci
+              {t("esg_perf_title")}
             </h2>
           </div>
 
@@ -122,7 +120,7 @@ export default function KeberlanjutanPage() {
                     <div className="flex items-center gap-2 text-emerald-600 mb-3">
                       <IconComponent className="w-5 h-5 shrink-0" />
                       <span className="text-xs font-bold tracking-wider text-gray-600 uppercase">
-                        {item.title}
+                        {t(item.titleKey as keyof typeof dictionary)}
                       </span>
                     </div>
 
@@ -146,7 +144,7 @@ export default function KeberlanjutanPage() {
                   </div>
 
                   <p className="text-xs text-gray-500 font-medium border-t border-gray-200 pt-3 mt-2">
-                    {item.subtitle}
+                    {t(item.subtitleKey as keyof typeof dictionary)}
                   </p>
                 </div>
               );
@@ -155,15 +153,15 @@ export default function KeberlanjutanPage() {
         </div>
       </section>
 
-      {/* 3. CSR SECTION (Section gelap ber-container max-w-4xl) */}
+      {/* 3. CSR SECTION */}
       <section className="w-full bg-slate-900 py-16 text-white">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center md:text-left mb-8">
             <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wider">
-              Pemberdayaan Masyarakat
+              {t("esg_csr_badge")}
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-1">
-              Inisiatif Tanggung Jawab Sosial (CSR)
+              {t("esg_csr_title")}
             </h2>
           </div>
 
@@ -177,7 +175,7 @@ export default function KeberlanjutanPage() {
                   <div className="relative h-44 w-full bg-slate-950">
                     <Image
                       src={program.image}
-                      alt={program.title}
+                      alt={t(program.titleKey as keyof typeof dictionary)}
                       fill
                       className="object-cover opacity-80 hover:opacity-100 transition duration-300"
                     />
@@ -185,10 +183,10 @@ export default function KeberlanjutanPage() {
 
                   <div className="p-5">
                     <h3 className="text-base font-bold text-white mb-2">
-                      {program.title}
+                      {t(program.titleKey as keyof typeof dictionary)}
                     </h3>
                     <p className="text-xs text-gray-300 leading-relaxed">
-                      {program.description}
+                      {t(program.descKey as keyof typeof dictionary)}
                     </p>
                   </div>
                 </div>
@@ -198,7 +196,7 @@ export default function KeberlanjutanPage() {
                     href="#"
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition"
                   >
-                    Pelajari Lebih Lanjut <ArrowRight className="w-4 h-4" />
+                    {t("esg_btn_learn_more")} <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>

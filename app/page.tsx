@@ -1,12 +1,27 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useLanguage, dictionary } from "@/context/LanguageContext";
 
 export default function Home() {
+  const { t } = useLanguage();
+
   const stats = [
-    { value: "25M", label: "TOTAL PRODUKSI TON/TAHUN" },
-    { value: "12 Juta", label: "JAM KERJA AMAN" },
-    { value: "95%", label: "EFISIENSI OPERASIONAL", color: "emerald" },
-  ];
+    {
+      valueKey: "home_stat1_val",
+      labelKey: "home_stat1_label",
+    },
+    {
+      valueKey: "home_stat2_val",
+      labelKey: "home_stat2_label",
+    },
+    {
+      valueKey: "home_stat3_val",
+      labelKey: "home_stat3_label",
+      color: "emerald",
+    },
+  ] as const;
 
   return (
     <div className="flex flex-col bg-slate-950 font-sans">
@@ -27,12 +42,10 @@ export default function Home() {
         {/* Konten Text & Button */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-6">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
-            Menambang untuk Masa Depan Berkelanjutan
+            {t("home_hero_title")}
           </h1>
           <p className="text-base md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed drop-shadow">
-            Berkomitmen pada keunggulan operasional and tanggung jawab
-            lingkungan dalam mengelola sumber daya alam Indonesia untuk generasi
-            mendatang.
+            {t("home_hero_desc")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
@@ -40,13 +53,13 @@ export default function Home() {
               href="/operasi"
               className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-8 py-3 rounded transition shadow-lg text-center"
             >
-              Eksplorasi Peta 3D
+              {t("home_btn_explore")}
             </Link>
             <Link
               href="/keberlanjutan"
               className="w-full sm:w-auto bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/20 font-semibold text-sm px-8 py-3 rounded transition shadow-lg text-center"
             >
-              Laporan ESG Mitra
+              {t("home_btn_esg")}
             </Link>
           </div>
         </div>
@@ -57,7 +70,7 @@ export default function Home() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center md:text-left">
             <span className="text-sm font-semibold text-emerald-600 uppercase tracking-wider">
-              Kinerja Utama
+              {t("home_stats_tag")}
             </span>
           </div>
 
@@ -76,10 +89,10 @@ export default function Home() {
                       : "text-gray-950"
                   }`}
                 >
-                  {stat.value}
+                  {t(stat.valueKey as keyof typeof dictionary)}
                 </span>
                 <p className="mt-3 text-xs md:text-sm font-semibold text-gray-500 uppercase tracking-widest leading-snug max-w-[200px] mx-auto">
-                  {stat.label}
+                  {t(stat.labelKey as keyof typeof dictionary)}
                 </p>
               </div>
             ))}

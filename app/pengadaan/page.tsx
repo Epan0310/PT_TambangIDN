@@ -3,55 +3,56 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Download, LogIn, ShieldAlert, Grid2X2 } from "lucide-react";
+import { useLanguage, dictionary } from "@/context/LanguageContext";
 
 export default function EProcurementPage() {
-  const [activeTab, setActiveTab] = useState("Semua Kategori");
+  const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("ALL");
 
   const categories = [
-    "Semua Kategori",
-    "Alat Berat",
-    "Logistik",
-    "Katering",
-    "Safety (K3)",
-  ];
+    { id: "ALL", labelKey: "cat_all" },
+    { id: "HEAVY", labelKey: "cat_heavy" },
+    { id: "LOGISTICS", labelKey: "cat_logistics" },
+    { id: "CATERING", labelKey: "cat_catering" },
+    { id: "SAFETY", labelKey: "cat_safety" },
+  ] as const;
 
   const tenders = [
     {
-      title: "Pengadaan Suku Cadang Dump Truck Kelas 400 Ton",
+      titleKey: "t1_title",
       code: "TDR-2024-AB-041",
       deadline: "25 Okt 2024",
-      status: "Pendaftaran Buka",
+      statusKey: "status_open",
       statusType: "open",
-      category: "Alat Berat",
+      categoryId: "HEAVY",
     },
     {
-      title: "Layanan Transportasi Batubara Rute Blok Selatan",
+      titleKey: "t2_title",
       code: "TDR-2024-LG-088",
       deadline: "28 Okt 2024",
-      status: "Pendaftaran Buka",
+      statusKey: "status_open",
       statusType: "open",
-      category: "Logistik",
+      categoryId: "LOGISTICS",
     },
     {
-      title: "Penyediaan APD (Alat Pelindung Diri) Area Smelter",
+      titleKey: "t3_title",
       code: "TDR-2024-SF-102",
       deadline: "02 Nov 2024",
-      status: "Persiapan Dokumen",
+      statusKey: "status_prep",
       statusType: "prep",
-      category: "Safety (K3)",
+      categoryId: "SAFETY",
     },
-  ];
+  ] as const;
 
   const filteredTenders =
-    activeTab === "Semua Kategori"
+    activeTab === "ALL"
       ? tenders
-      : tenders.filter((t) => t.category === activeTab);
+      : tenders.filter((item) => item.categoryId === activeTab);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
-      {/* Container disamakan lebarnya dengan Navbar (max-w-6xl) */}
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* 1. HERO SECTION (Overlay Foto & Box Teks Disesuaikan) */}
+        {/* 1. HERO SECTION */}
         <section className="relative rounded-2xl overflow-hidden min-h-[380px] sm:min-h-[420px] flex items-center border border-gray-200 shadow-sm">
           <Image
             src="/images/hero-procurement.png"
@@ -61,20 +62,15 @@ export default function EProcurementPage() {
             className="object-cover object-center"
           />
 
-          {/* Overlay Gradient Gelap pada Foto Background */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/25" />
 
-          {/* Overlay Box Teks Transparan (Glassmorphism) */}
           <div className="relative z-10 p-6 sm:p-10 max-w-xl">
             <div className="bg-slate-950/60 backdrop-blur-md border border-white/15 rounded-xl p-6 sm:p-8 text-white space-y-4 shadow-2xl">
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-                Portal Pengadaan &amp; Pendaftaran Rekanan Vendor Resmi
+                {t("hero_title")}
               </h1>
               <p className="text-xs sm:text-sm text-gray-200/90 leading-relaxed font-normal">
-                Sistem terintegrasi untuk pendaftaran rekanan, manajemen tender,
-                dan pengadaan barang/jasa di lingkungan operasional PT Tambang
-                Indonesia. Mengedepankan transparansi, efisiensi, dan
-                keselamatan kerja.
+                {t("hero_desc")}
               </p>
             </div>
           </div>
@@ -85,26 +81,24 @@ export default function EProcurementPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h2 className="text-xl font-bold text-gray-950">
-                Daftar Tender Terbuka
+                {t("tender_title")}
               </h2>
-              <p className="text-xs text-gray-500 mt-1">
-                Kesempatan pengadaan barang dan jasa terkini.
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t("tender_desc")}</p>
             </div>
 
             {/* Filter Pill Buttons */}
             <div className="flex flex-wrap items-center gap-2">
               {categories.map((cat) => (
                 <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
+                  key={cat.id}
+                  onClick={() => setActiveTab(cat.id)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
-                    activeTab === cat
+                    activeTab === cat.id
                       ? "bg-black text-white shadow-sm"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
-                  {cat}
+                  {t(cat.labelKey as keyof typeof dictionary)}
                 </button>
               ))}
             </div>
@@ -115,18 +109,20 @@ export default function EProcurementPage() {
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="bg-slate-50 border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[10px] font-bold">
-                  <th className="py-3.5 px-4 font-bold">NAMA TENDER</th>
-                  <th className="py-3.5 px-4 font-bold">KODE TENDER</th>
-                  <th className="py-3.5 px-4 font-bold">BATAS AKHIR</th>
-                  <th className="py-3.5 px-4 font-bold">STATUS</th>
-                  <th className="py-3.5 px-4 font-bold text-right">AKSI</th>
+                  <th className="py-3.5 px-4 font-bold">{t("th_nama")}</th>
+                  <th className="py-3.5 px-4 font-bold">{t("th_kode")}</th>
+                  <th className="py-3.5 px-4 font-bold">{t("th_batas")}</th>
+                  <th className="py-3.5 px-4 font-bold">{t("th_status")}</th>
+                  <th className="py-3.5 px-4 font-bold text-right">
+                    {t("th_aksi")}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-gray-700">
                 {filteredTenders.map((item, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/80 transition">
                     <td className="py-4 px-4 font-bold text-gray-900 max-w-xs sm:max-w-md">
-                      {item.title}
+                      {t(item.titleKey as keyof typeof dictionary)}
                     </td>
                     <td className="py-4 px-4 text-gray-500 font-mono text-[11px]">
                       {item.code}
@@ -137,17 +133,17 @@ export default function EProcurementPage() {
                     <td className="py-4 px-4">
                       {item.statusType === "open" ? (
                         <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-md border border-emerald-200 inline-block">
-                          {item.status}
+                          {t(item.statusKey as keyof typeof dictionary)}
                         </span>
                       ) : (
                         <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded-md border border-amber-200 inline-block">
-                          {item.status}
+                          {t(item.statusKey as keyof typeof dictionary)}
                         </span>
                       )}
                     </td>
                     <td className="py-4 px-4 text-right">
                       <button className="border border-gray-300 hover:bg-black hover:text-white text-gray-800 text-xs font-semibold px-4 py-1.5 rounded-lg transition">
-                        Detail
+                        {t("btn_detail")}
                       </button>
                     </td>
                   </tr>
@@ -159,25 +155,23 @@ export default function EProcurementPage() {
 
         {/* 3. SPLIT SECTION (Pendaftaran Rekanan Baru & Masuk Portal) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* KIRI: Pendaftaran Rekanan Baru (7 Cols) */}
+          {/* KIRI: Pendaftaran Rekanan Baru */}
           <div className="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Grid2X2 className="w-5 h-5 text-gray-950 shrink-0" />
                 <h3 className="text-xl font-bold text-gray-950">
-                  Pendaftaran Rekanan Baru
+                  {t("reg_title")}
                 </h3>
               </div>
               <p className="text-xs text-gray-500 leading-relaxed max-w-lg">
-                Ikuti panduan registrasi tiga langkah untuk menjadi vendor resmi
-                yang terverifikasi di sistem e-procurement kami.
+                {t("reg_desc")}
               </p>
             </div>
 
             {/* Stepper Steps */}
             <div className="py-6 px-2">
               <div className="relative flex items-center justify-between">
-                {/* Connecting Line */}
                 <div className="absolute left-[10%] right-[10%] top-4 h-0.5 bg-gray-200 -z-0" />
 
                 {/* Step 1 */}
@@ -186,7 +180,7 @@ export default function EProcurementPage() {
                     1
                   </div>
                   <span className="text-[11px] font-bold text-gray-900 max-w-[90px] leading-tight">
-                    Legalitas &amp; Administrasi
+                    {t("step_1")}
                   </span>
                 </div>
 
@@ -196,7 +190,7 @@ export default function EProcurementPage() {
                     2
                   </div>
                   <span className="text-[11px] font-medium text-gray-500 max-w-[90px] leading-tight">
-                    Sertifikasi K3LH
+                    {t("step_2")}
                   </span>
                 </div>
 
@@ -206,7 +200,7 @@ export default function EProcurementPage() {
                     3
                   </div>
                   <span className="text-[11px] font-medium text-gray-500 max-w-[90px] leading-tight">
-                    Portofolio &amp; Kapasitas
+                    {t("step_3")}
                   </span>
                 </div>
               </div>
@@ -215,18 +209,21 @@ export default function EProcurementPage() {
             {/* Action Button Orange */}
             <div className="pt-2 flex justify-end">
               <button className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold text-xs px-6 py-3 rounded-lg shadow-sm transition">
-                Mulai Pendaftaran
+                {t("btn_start_reg")}
               </button>
             </div>
           </div>
 
-          {/* KANAN: Masuk Portal (5 Cols) */}
-          <div className="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-4">
+          {/* KANAN: Masuk Portal */}
+          <div
+            id="login"
+            className="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-4"
+          >
             <div>
-              <h3 className="text-xl font-bold text-gray-950">Masuk Portal</h3>
-              <p className="text-xs text-gray-500 mt-1">
-                Akses khusus untuk vendor terdaftar.
-              </p>
+              <h3 className="text-xl font-bold text-gray-950">
+                {t("login_title")}
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">{t("login_desc")}</p>
 
               <form
                 className="mt-5 space-y-4"
@@ -234,7 +231,7 @@ export default function EProcurementPage() {
               >
                 <div>
                   <label className="block text-[10px] font-bold text-gray-600 uppercase mb-1 tracking-wider">
-                    ID Rekanan / Email
+                    {t("lbl_vendor_id")}
                   </label>
                   <input
                     type="text"
@@ -245,7 +242,7 @@ export default function EProcurementPage() {
 
                 <div>
                   <label className="block text-[10px] font-bold text-gray-600 uppercase mb-1 tracking-wider">
-                    Kata Sandi
+                    {t("lbl_password")}
                   </label>
                   <input
                     type="password"
@@ -260,13 +257,13 @@ export default function EProcurementPage() {
                       type="checkbox"
                       className="rounded border-gray-300 text-black focus:ring-black"
                     />
-                    <span>Ingat Saya</span>
+                    <span>{t("lbl_remember")}</span>
                   </label>
                   <a
                     href="#"
                     className="font-bold text-gray-900 hover:underline"
                   >
-                    Lupa Sandi?
+                    {t("lbl_forgot")}
                   </a>
                 </div>
 
@@ -275,14 +272,14 @@ export default function EProcurementPage() {
                   className="w-full bg-black hover:bg-gray-800 text-white font-semibold text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 shadow-sm mt-2"
                 >
                   <LogIn className="w-4 h-4" />
-                  Masuk Sistem
+                  {t("btn_login")}
                 </button>
               </form>
             </div>
           </div>
         </div>
 
-        {/* 4. BOTTOM BANNER (Kepatuhan & Etika Bisnis) */}
+        {/* 4. BOTTOM BANNER */}
         <section className="bg-slate-100/80 border border-gray-200 border-l-4 border-l-amber-500 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="p-2 bg-amber-100 text-amber-600 rounded-lg shrink-0 mt-0.5">
@@ -290,20 +287,17 @@ export default function EProcurementPage() {
             </div>
             <div className="space-y-1">
               <h3 className="text-base font-bold text-gray-950">
-                Kepatuhan &amp; Etika Bisnis (Anti-Korupsi)
+                {t("compliance_title")}
               </h3>
               <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
-                PT Tambang Indonesia menerapkan kebijakan Zero Tolerance
-                terhadap suap dan korupsi. Seluruh rekanan wajib mematuhi
-                standar integritas tertinggi selama proses pengadaan dan
-                operasional.
+                {t("compliance_desc")}
               </p>
             </div>
           </div>
 
           <button className="bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 text-xs font-semibold px-4 py-2.5 rounded-lg transition flex items-center justify-center gap-2 shrink-0 shadow-sm whitespace-nowrap">
             <Download className="w-4 h-4 text-gray-600" />
-            Unduh Vendor Code of Conduct
+            {t("btn_download_coc")}
           </button>
         </section>
       </div>

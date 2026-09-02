@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import { Download, LogIn, ShieldAlert, Grid2X2 } from "lucide-react";
@@ -10,6 +11,7 @@ import TenderDetailModal, {
 } from "@/components/procurement/TenderDetailModal";
 
 export default function EProcurementPage() {
+  const router = useRouter();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("ALL");
 
@@ -24,13 +26,27 @@ export default function EProcurementPage() {
   const [vendorId, setVendorId] = useState("");
   const [password, setPassword] = useState("");
 
+  // Handler Login dengan Validasi Akun Dummy
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Data Akun Dummy untuk Pengujian
+    const VALID_VENDOR_ID = "VND-2026-9901";
+    const VALID_PASSWORD = "password123";
+
     if (!vendorId || !password) {
       alert("Harap isi ID Rekanan dan Kata Sandi!");
       return;
     }
-    alert(`Login berhasil untuk ID Vendor: ${vendorId}`);
+
+    // Pengecekan Kredensial
+    if (vendorId === VALID_VENDOR_ID && password === VALID_PASSWORD) {
+      router.push("/vendor/dashboard");
+    } else {
+      alert(
+        `ID Rekanan atau Kata Sandi salah!\n\nGunakan akun demo berikut:\nID Rekanan: ${VALID_VENDOR_ID}\nKata Sandi: ${VALID_PASSWORD}`,
+      );
+    }
   };
 
   const categories = [
@@ -45,7 +61,7 @@ export default function EProcurementPage() {
     {
       titleKey: "t1_title",
       code: "TDR-2024-AB-041",
-      deadline: "25 Okt 2024",
+      deadline: "25 Okt 2026",
       statusKey: "status_open",
       statusType: "open" as const,
       categoryId: "HEAVY",
@@ -61,7 +77,7 @@ export default function EProcurementPage() {
     {
       titleKey: "t2_title",
       code: "TDR-2024-LG-088",
-      deadline: "28 Okt 2024",
+      deadline: "28 Okt 2026",
       statusKey: "status_open",
       statusType: "open" as const,
       categoryId: "LOGISTICS",
@@ -77,7 +93,7 @@ export default function EProcurementPage() {
     {
       titleKey: "t3_title",
       code: "TDR-2024-SF-102",
-      deadline: "02 Nov 2024",
+      deadline: "02 Nov 2026",
       statusKey: "status_prep",
       statusType: "prep" as const,
       categoryId: "SAFETY",
@@ -115,7 +131,6 @@ export default function EProcurementPage() {
   };
 
   const handleApplyBidFromDetail = () => {
-    // Arahkan user ke Form Login portal
     const loginSection = document.getElementById("login");
     if (loginSection) {
       loginSection.scrollIntoView({ behavior: "smooth" });
@@ -283,7 +298,7 @@ export default function EProcurementPage() {
               </div>
             </div>
 
-            {/* Action Button Orange (Membuka Modal) */}
+            {/* Action Button Orange */}
             <div className="pt-2 flex justify-end">
               <button
                 type="button"

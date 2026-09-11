@@ -67,7 +67,7 @@ export default function KeberlanjutanPage() {
       <section className="relative w-full text-white pt-28 pb-16 min-h-[85vh] md:min-h-[75vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/hero-esg.png"
+            src="/images/hero-2.jpg"
             alt="Transparansi Keberlanjutan"
             fill
             priority

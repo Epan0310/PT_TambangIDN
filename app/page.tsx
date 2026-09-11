@@ -54,7 +54,7 @@ export default function Home() {
     },
     {
       id: 3,
-      image: "/images/hero-3.jpeg",
+      image: "/images/hero-3.jpg",
       badge: "Tata Kelola & Kemitraan",
       titleFallback: "Portal E-Procurement Transparan & Terintegrasi",
       descFallback:
@@ -82,7 +82,7 @@ export default function Home() {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
-  // --- 2. STATS DATA ---
+  // --- 2. STATS DATA (Explicit Type Annotation) ---
   const stats: StatItem[] = [
     {
       valueKey: "home_stat1_val",
@@ -144,7 +144,7 @@ export default function Home() {
               className="object-cover object-center scale-105 transition-transform duration-10000 ease-linear"
             />
 
-            {/* Soft Overlay Gradients (Foto Tetap Jernih & Terang) */}
+            {/* Soft Overlay Gradients */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent z-10" />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/20 z-10" />
           </div>
